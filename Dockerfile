@@ -1,26 +1,35 @@
-FROM n8nio/n8n:latest
+# Usar Ubuntu como base e instalar n8n manualmente
+FROM ubuntu:22.04
 
-USER root
+# Instalar dependências básicas
+RUN apt-get update && apt-get install -y \
+    curl \
+    nodejs \
+    npm \
+    python3 \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Investigar qual sistema operacional estamos usando
-RUN echo "=== INVESTIGAÇÃO DO SISTEMA ===" && \
-    cat /etc/os-release 2>/dev/null || echo "Sem /etc/os-release" && \
-    ls -la /etc/ | grep release && \
-    which python3 2>/dev/null || echo "Python3 não encontrado" && \
-    which pip3 2>/dev/null || echo "Pip3 não encontrado" && \
-    which apk 2>/dev/null || echo "APK não encontrado" && \
-    which apt-get 2>/dev/null || echo "APT não encontrado" && \
-    which yum 2>/dev/null || echo "YUM não encontrado" && \
-    echo "=== FIM DA INVESTIGAÇÃO ==="
+# Instalar n8n
+RUN npm install -g n8n
 
-# Tentar usar Python já instalado
-RUN python3 -m pip install --upgrade pip --user 2>/dev/null || echo "Pip upgrade falhou"
+# Copiar requirements
+COPY requirements.txt /tmp/requirements.txt
 
-# Instalar bibliotecas usando método direto
-RUN python3 -m pip install --user python-docx==0.8.11 || echo "python-docx falhou"
+# Instalar bibliotecas Python
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
-USER node
+# Criar usuário n8n
+RUN useradd -m -s /bin/bash n8n
+USER n8n
+WORKDIR /home/n8n
 
+# Variáveis de ambiente
+ENV N8N_HOST=0.0.0.0
+ENV N8N_PORT=5678
 ENV PYTHON_PATH=/usr/bin/python3
+
 EXPOSE 5678
 CMD ["n8n", "start"]
