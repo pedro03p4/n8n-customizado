@@ -1,0 +1,10 @@
+{
+  "name": "n8n-custom",
+  "version": "1.0.0",
+  "description": "n8n customizado com bibliotecas Python",
+  "dependencies": {
+    "moment": "^2.29.4",
+    "lodash": "^4.17.21",
+    "axios": "^1.6.0"
+  }
+}

@@ -1,0 +1,20 @@
+# Bibliotecas para manipulação de documentos
+python-docx==0.8.11
+docx2txt==0.8
+lxml==4.9.3
+
+# Bibliotecas para conversão PDF
+reportlab==4.0.4
+
+# Bibliotecas auxiliares
+jinja2==3.1.2
+pandas==2.1.4
+python-dateutil==2.8.2
+pathlib2==2.3.7
+
+# Bibliotecas para processamento de dados
+requests==2.31.0
+numpy==1.24.3
+
+# Bibliotecas para validação
+email-validator==2.1.0
