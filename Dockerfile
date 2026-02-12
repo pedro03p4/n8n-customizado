@@ -2,30 +2,33 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Atualizar sistema e instalar dependências
-RUN apk update && apk add --no-cache \
+# Atualizar sistema e instalar dependências (Ubuntu/Debian)
+RUN apt-get update && apt-get install -y \
     python3 \
-    py3-pip \
+    python3-pip \
     python3-dev \
-    build-base \
+    build-essential \
     gcc \
-    musl-dev \
     libffi-dev \
     libreoffice \
-    openjdk11-jre \
+    default-jre \
     fontconfig \
-    ttf-dejavu \
-    ttf-liberation \
-    && rm -rf /var/cache/apk/*
+    fonts-dejavu \
+    fonts-liberation \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Criar symlink para python (algumas bibliotecas esperam 'python')
+# Criar symlink para python
 RUN ln -sf python3 /usr/bin/python
+
+# Atualizar pip
+RUN python3 -m pip install --upgrade pip
 
 # Copiar arquivo de dependências
 COPY requirements.txt /tmp/requirements.txt
 
 # Instalar bibliotecas Python
-RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # Voltar ao usuário n8n
 USER node
